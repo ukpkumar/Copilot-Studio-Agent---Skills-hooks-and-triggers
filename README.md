@@ -18,7 +18,7 @@ The guide provides click-by-click instructions, complete skill descriptions and 
 |---|---|---|
 | 1. Environment and agent | Test environment, demo values, agent creation prompt, baseline instructions | [Prepare](LAB-BEGINNER-LINEAR.md#step-1-prepare-your-environment-and-demo-values) and [create the agent](LAB-BEGINNER-LINEAR.md#step-2-create-the-agent-and-paste-its-instructions) |
 | 2. Four skills | Name, description, full instructions, and a test for each HR skill | [Create skills](LAB-BEGINNER-LINEAR.md#step-3-create-four-skills-with-complete-instructions) |
-| 3. Entry points | Distinguish Copilot/Teams chat triggers from Preview authoring tests | [Configure the trigger](LAB-BEGINNER-LINEAR.md#step-4-understand-and-configure-the-chat-trigger) |
+| 3. Chat, schedule, and event triggers | Configure a daily HR review and a SharePoint new-onboarding-item trigger, with full prompts, schedule/source settings, tests, and cleanup | [Build the three trigger examples](LAB-BEGINNER-LINEAR.md#step-4-configure-chat-scheduled-and-event-driven-triggers) |
 | 4. Tools | Outlook and SharePoint action selection, connections, fixed destinations, approval instructions | [Configure connector tools](LAB-BEGINNER-LINEAR.md#step-5-configure-connector-tools) |
 | 5. Workflow hook | Hook-generated event contract and a populated additionalContext response | [Build the context hook](LAB-BEGINNER-LINEAR.md#step-6-create-the-session-context-workflow-hook) |
 | 6. Python hook | Complete prompt-processing function with matching/nonmatching behavior and limitations | [Build the Python hook](LAB-BEGINNER-LINEAR.md#step-7-create-the-prompt-processing-python-hook) |
@@ -27,7 +27,7 @@ The guide provides click-by-click instructions, complete skill descriptions and 
 | 9. Case automation | Trigger inputs, validation, row mappings, response outputs, and attaching the flow as an agent tool | [Build case intake](LAB-BEGINNER-LINEAR.md#step-10-build-and-attach-the-case-intake-automation) |
 | 10. Event automation | Modified-row trigger, filtering attributes, status branches, loop prevention, optional test email | [Process status changes](LAB-BEGINNER-LINEAR.md#step-11-automatically-update-records-when-status-changes) |
 | 11. Connected agent | Full specialist instructions, publishing prerequisite, delegation description, arithmetic test | [Connect Payroll Specialist](LAB-BEGINNER-LINEAR.md#step-12-create-and-connect-a-payroll-specialist-agent) |
-| 12. Demonstration and production preparation | Twelve ordered tests, completion criteria, safe cleanup, production preparation | [Run the demonstration](LAB-BEGINNER-LINEAR.md#step-13-run-the-complete-demonstration) and [prepare for production](LAB-BEGINNER-LINEAR.md#step-14-clean-up-and-prepare-for-production) |
+| 12. Demonstration and production preparation | Twelve core tests plus three autonomous-trigger tests, completion criteria, safe cleanup, production preparation | [Run the demonstration](LAB-BEGINNER-LINEAR.md#step-13-run-the-complete-demonstration) and [prepare for production](LAB-BEGINNER-LINEAR.md#step-14-clean-up-and-prepare-for-production) |
 
 ## Important corrections about hooks
 
