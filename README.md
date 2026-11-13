@@ -1,437 +1,48 @@
-# Copilot Studio Lab Guide: Skills, Triggers, Hooks, Workflow Automation, Agent-to-Agent, and Dataverse
+# From Chat to Action: A Hands-On Copilot Studio HR Agent Lab
 
-> Hands-on lab in a module format inspired by Agent Academy learning guides.
+Build an HR assistant with **instruction-based skills, chat triggers, workflow and Python hooks, Dataverse automation, and a connected Payroll Specialist Agent**.
 
-## Table of contents
+**Start here: [Open the complete beginner hands-on guide](LAB-BEGINNER-LINEAR.md).**
 
-1. [Overview](#overview)
-2. [Learning outcomes](#learning-outcomes)
-3. [Prerequisites](#prerequisites)
-4. [Architecture](#architecture)
-5. [Module 1 - Create the base agent](#module-1---create-the-base-agent)
-6. [Module 2 - Add skills, tools, and trigger](#module-2---add-skills-tools-and-trigger)
-7. [Module 3 - Add Session Workflow Hook (global guardrail)](#module-3---add-session-workflow-hook-global-guardrail)
-8. [Module 4 - Add Python Hook (per-message dynamic guardrail)](#module-4---add-python-hook-per-message-dynamic-guardrail)
-9. [Module 5 - Add workflow automation for HR case intake](#module-5---add-workflow-automation-for-hr-case-intake)
-10. [Module 6 - Add agent-to-agent scenario](#module-6---add-agent-to-agent-scenario)
-11. [Module 7 - Add Dataverse storage and auto-update flow](#module-7---add-dataverse-storage-and-auto-update-flow)
-12. [Module 8 - Visualize and test hook differences](#module-8---visualize-and-test-hook-differences)
-13. [Troubleshooting](#troubleshooting)
-14. [Knowledge check](#knowledge-check)
+**Optional deep dive: [Hooks explained: all events, fields, scenarios, and Workflow versus Python](HOOKS-REFERENCE.md).** Includes the same prompt-processing requirement implemented both ways, pre-tool decisions, failure modes, and runtime evidence.
 
-## Alternate format
+The guide provides click-by-click instructions, complete skill descriptions and procedures, copy/paste agent prompts and Python code, connector configuration, flow field mappings, test prompts, expected results, and troubleshooting.
 
-If you prefer a strict beginner linear format with copy/paste blocks, use:
+## Choose your reading route
 
-- [LAB-BEGINNER-LINEAR.md](LAB-BEGINNER-LINEAR.md)
+**Linear route:** Read the [beginner guide](LAB-BEGINNER-LINEAR.md) from Step 1 through Step 15.
 
----
+**Module route:** Use the index below to open the corresponding detailed exercise. Both routes use the same complete instructions, so there is no second abbreviated "add a skill" checklist to guess from.
 
-## Overview
+| Module | What you will actually build | Detailed exercise |
+|---|---|---|
+| 1. Environment and agent | Test environment, demo values, agent creation prompt, baseline instructions | [Prepare](LAB-BEGINNER-LINEAR.md#step-1-prepare-your-environment-and-demo-values) and [create the agent](LAB-BEGINNER-LINEAR.md#step-2-create-the-agent-and-paste-its-instructions) |
+| 2. Four skills | Name, description, full instructions, and a test for each HR skill | [Create skills](LAB-BEGINNER-LINEAR.md#step-3-create-four-skills-with-complete-instructions) |
+| 3. Entry points | Distinguish Copilot/Teams chat triggers from Preview authoring tests | [Configure the trigger](LAB-BEGINNER-LINEAR.md#step-4-understand-and-configure-the-chat-trigger) |
+| 4. Tools | Outlook and SharePoint action selection, connections, fixed destinations, approval instructions | [Configure connector tools](LAB-BEGINNER-LINEAR.md#step-5-configure-connector-tools) |
+| 5. Workflow hook | Hook-generated event contract and a populated additionalContext response | [Build the context hook](LAB-BEGINNER-LINEAR.md#step-6-create-the-session-context-workflow-hook) |
+| 6. Python hook | Complete prompt-processing function with matching/nonmatching behavior and limitations | [Build the Python hook](LAB-BEGINNER-LINEAR.md#step-7-create-the-prompt-processing-python-hook) |
+| 7. Hook comparison | Concrete examples, workflow output inspection, Python transformation demonstration | [See the difference](LAB-BEGINNER-LINEAR.md#step-8-see-the-difference-between-the-two-hooks) |
+| 8. Storage | Solution, table, column types, logical names, and a manual storage test | [Create Dataverse storage](LAB-BEGINNER-LINEAR.md#step-9-create-the-dataverse-case-table) |
+| 9. Case automation | Trigger inputs, validation, row mappings, response outputs, and attaching the flow as an agent tool | [Build case intake](LAB-BEGINNER-LINEAR.md#step-10-build-and-attach-the-case-intake-automation) |
+| 10. Event automation | Modified-row trigger, filtering attributes, status branches, loop prevention, optional test email | [Process status changes](LAB-BEGINNER-LINEAR.md#step-11-automatically-update-records-when-status-changes) |
+| 11. Connected agent | Full specialist instructions, publishing prerequisite, delegation description, arithmetic test | [Connect Payroll Specialist](LAB-BEGINNER-LINEAR.md#step-12-create-and-connect-a-payroll-specialist-agent) |
+| 12. Demonstration and cleanup | Twelve ordered tests, completion criteria, troubleshooting, safe cleanup | [Run the demonstration](LAB-BEGINNER-LINEAR.md#step-13-run-the-complete-demonstration), [troubleshoot](LAB-BEGINNER-LINEAR.md#step-14-troubleshooting), and [clean up](LAB-BEGINNER-LINEAR.md#step-15-clean-up-and-adapt-for-a-customer) |
 
-In this lab, you build an **HR Assist Agent** and progressively add advanced capabilities:
+## Important corrections about hooks
 
-- Structured behavior with skills
-- Trigger configuration
-- Two hooks with different purposes:
-  - **Session workflow hook** (runs once per chat session)
-  - **Python hook** (runs every user message)
-- Workflow-based task automation
-- Agent-to-agent delegation
-- Dataverse persistence and change-driven automation
+**Event and implementation are independent.** The event determines *when* a hook runs; Workflow or Python determines *how* it runs. A workflow is not inherently session-scoped, and Python is not inherently per-message.
 
----
+The lab deliberately selects Start (pre-loop) for context and User prompt submitted for prompt processing. Start's observed UI description says "once before the reasoning loop begins"; do not promise one run per chat across preview versions without runtime evidence.
 
-## Learning outcomes
+The keyword decision in Python is deterministic, but the model's response is not. Prefixes and additional context are not authorization controls. A debug marker in model input also does not automatically appear in chat output.
 
-After this lab, you can:
+**You do not need both hooks just to repeat the same HR safety instructions.** See the [examples and evidence exercise](LAB-BEGINNER-LINEAR.md#step-8-see-the-difference-between-the-two-hooks) for when each pattern is useful.
 
-1. Explain when to use a session hook vs Python hook
-2. Build and test both hook types
-3. Implement a practical automation workflow
-4. Connect specialist agents for delegated responses
-5. Persist case data and react to changes automatically
+## Scope, screenshots, and implementation status
 
----
+This is a learning guide, not a deployable solution export. The original demonstration agent had the two hooks configured. Additional case automation, Dataverse, and specialist-agent exercises must be built by the learner; this repository does not claim they have already been deployed.
 
-## Prerequisites
+New screenshots show the actual skill editor, trigger picker, and tool picker. Older hook screenshots are explicitly labeled historical illustrations in the guide; follow the written event/action settings rather than copying a starter dialog blindly.
 
-You need:
-
-1. Copilot Studio access with maker rights
-2. Ability to create/edit:
-   - Agents
-   - Workflows (Power Automate)
-   - Dataverse tables and flows
-3. Optional:
-   - Teams/Outlook connectors
-   - SharePoint site for artifacts
-
----
-
-## Architecture
-
-```text
-User
-  -> HR Assist Agent
-      -> Session Hook (workflow, once per session)
-      -> Python Hook (per user message)
-      -> Workflow (case intake + escalation)
-      -> Connected Payroll Agent (delegation path)
-      -> Dataverse (create/update case records)
-          -> Dataverse change-trigger flow (auto actions)
-```
-
----
-
-## Module 1 - Create the base agent
-
-### Goal
-
-Create the core `HR Assist Agent` with clear instructions.
-
-### Steps
-
-1. Create a new agent in Copilot Studio named `HR Assist Agent`.
-2. Open **Build**.
-3. Add this baseline instruction:
-
-```text
-You are HR Assist Agent, a professional HR support assistant.
-Handle onboarding, records requests, manager workflows, policy questions, and payroll FAQs.
-
-Rules:
-- Be concise, empathetic, and professional.
-- Confirm employee identity before taking action.
-- Do not invent policy numbers, thresholds, or legal conclusions.
-- Offer escalation when risk/sensitivity is high.
-```
-
-### Checkpoint
-
-- Agent exists and instruction text is saved.
-
-### Screenshot
-
-![Agent Build](images/01-agent-build.png)
-
----
-
-## Module 2 - Add skills, tools, and trigger
-
-### Goal
-
-Add reusable capability blocks and ensure the chat trigger is available.
-
-### Steps
-
-1. Add skills:
-   - `employee-onboarding`
-   - `employee-records-request`
-   - `manager-hr-workflows`
-   - `hr-policy-qa`
-2. Add tools:
-   - Send email
-   - Read SharePoint list items
-   - Create a file in SharePoint
-3. In **Triggers**, verify `Chat with the agent`.
-
-### Checkpoint
-
-- Skills and tools appear in Build panel.
-- Chat trigger is active.
-
----
-
-## Module 3 - Add Session Workflow Hook (global guardrail)
-
-### Goal
-
-Create a **global session guardrail** that runs once at session start.
-
-### Why this hook exists
-
-Use this when you need conversation-wide defaults every time:
-
-- identity confirmation policy
-- escalation style
-- anti-hallucination constraints
-
-### Steps
-
-1. Build -> **More options (...)** -> **Hooks (Preview)**.
-2. Create hook:
-   - **Name:** `Session Start - Safety and Triage Context`
-   - **When:** `Start (pre-loop)`
-   - **Action:** `Run a workflow`
-   - **Failure mode:** `Continue`
-3. Create/select workflow: `Hook - SessionStart Safety and Triage`.
-4. In that workflow:
-   - Trigger: `When an agent calls the workflow`
-   - Respond output: `additionalContext`
-   - Return a policy context string for the session
-
-### Example output text for `additionalContext`
-
-```text
-Always verify employee identity before actions.
-Do not provide legal conclusions.
-Do not invent policy numbers if unknown.
-Use sensitive-case handling for discrimination/harassment complaints.
-```
-
-### Checkpoint
-
-- Hook appears in list as Start (pre-loop) + Run a workflow.
-
----
-
-## Module 4 - Add Python Hook (per-message dynamic guardrail)
-
-### Goal
-
-Create a **dynamic per-message guardrail** for risky prompts.
-
-### Why this hook exists
-
-Use Python hook when logic must inspect each message and branch conditionally.
-
-### Steps
-
-1. In Hooks, create:
-   - **Name:** `Prompt Risk Detector (Python)`
-   - **When:** `User prompt submitted`
-   - **Action:** `Run a Python script`
-   - **Failure mode:** `Continue`
-2. Paste:
-
-```python
-def main(event):
-    prompt = (event.get("prompt") or "").strip()
-    if not prompt:
-        return {"modifiedPrompt": prompt}
-
-    risk_terms = [
-        "discrimination",
-        "harassment",
-        "retaliation",
-        "payroll dispute",
-        "wrong salary",
-        "legal",
-        "lawsuit",
-        "whistleblower"
-    ]
-
-    lowered = prompt.lower()
-    has_risk = any(term in lowered for term in risk_terms)
-
-    if not has_risk:
-        return {"modifiedPrompt": prompt}
-
-    safety_prefix = (
-        "[HOOK:HIGH_RISK_HR_CASE]\n"
-        "Handle with care: acknowledge empathy, avoid legal conclusions, "
-        "ask for identity confirmation, summarize facts, and offer escalation to HR Operations.\n\n"
-    )
-
-    return {"modifiedPrompt": safety_prefix + prompt}
-```
-
-### Checkpoint
-
-- Hook list shows:
-  - Session Start - Safety and Triage Context (workflow)
-  - Prompt Risk Detector (Python)
-
-### Screenshots
-
-![Hooks List](images/02-hooks-list.png)
-![Add Hook Python](images/03-add-hook-python.png)
-
----
-
-## Module 5 - Add workflow automation for HR case intake
-
-### Goal
-
-Automate case creation + escalation notification.
-
-### Steps
-
-Create flow `HR Case Intake and Escalation`:
-
-1. Trigger: `When an agent calls the workflow`
-2. Inputs:
-   - `employeeId`
-   - `issueType`
-   - `summary`
-   - `severity`
-3. Actions:
-   - Create Dataverse row (or SharePoint row for starter)
-   - Send notification to HR Ops
-4. Output back to agent:
-   - `caseId`
-   - `createdAt`
-   - `escalationStatus`
-
-### Workflow logic
-
-Input capture -> record creation -> notification -> response to agent.
-
-### Checkpoint
-
-- Asking the agent to open a case returns a case ID.
-
----
-
-## Module 6 - Add agent-to-agent scenario
-
-### Goal
-
-Delegate payroll-heavy requests to a specialist agent.
-
-### Steps
-
-1. Create second agent: `Payroll Specialist Agent`.
-2. In HR agent -> **Connected agents** -> add Payroll agent.
-3. Add routing rule in instruction/skill:
-
-```text
-If request is payroll-specific (tax, salary mismatch, arrears, bonus formula),
-route to Payroll Specialist Agent.
-```
-
-### Checkpoint
-
-- Payroll-specific query follows delegated specialist path.
-
----
-
-## Module 7 - Add Dataverse storage and auto-update flow
-
-### Goal
-
-Persist case data and react automatically to updates.
-
-### Steps
-
-1. Create Dataverse table `hr_case` with:
-   - `case_id`
-   - `employee_id`
-   - `category`
-   - `severity`
-   - `status` (New/In Review/Escalated/Closed)
-   - `owner`
-   - `last_updated`
-2. Create automation flow:
-   - Trigger: `When a row is added, modified or deleted`
-   - If `status = Escalated` -> notify HR leadership
-   - If `status = Closed` -> notify requester + update summary table
-
-### Checkpoint
-
-- Manual status update triggers downstream automation.
-
----
-
-## Module 8 - Visualize and test hook differences
-
-This section answers: **Why both hooks?**
-
-## Core difference
-
-| Hook | Runs when | Scope | Best use |
-|---|---|---|---|
-| Session workflow hook | Once at new chat start | Whole session | Set baseline policy/guardrail |
-| Python hook | Every user message | Per-turn | Dynamic text detection and conditional rewrite |
-
-## Practical examples
-
-### Example A - Session hook value
-
-User asks: `What is leave carry-forward?`  
-Even without risky terms, session policy still applies (identity/precision/escalation style baseline).
-
-### Example B - Python hook value
-
-User asks: `My manager is discriminating and I may take legal action.`  
-Per-message detection triggers prompt rewrite and safer handling for this turn.
-
-### Example C - Why both together
-
-Same chat:
-1. Safe prompt
-2. Risky prompt
-3. Safe prompt again
-
-Result:
-- Session baseline stays active for all turns
-- Python risk mode activates only on risky turn(s)
-
-## Visual debug method (recommended)
-
-Add temporary debug markers:
-
-1. Session workflow output prefix: `[DEBUG:SESSION_HOOK]`
-2. Python rewrite prefix: `[DEBUG:PY_HOOK]`
-
-Then test:
-
-1. New chat, safe prompt -> session marker behavior only
-2. Risky prompt -> Python marker appears
-3. Safe prompt again -> Python marker gone; session baseline remains
-
-Remove markers after demo.
-
-## Execution-count proof
-
-In activity/monitor views:
-
-- Session workflow hook should run **1 time per new chat**
-- Python hook should run **1 time per user message**
-
----
-
-## Troubleshooting
-
-### Hook did not trigger
-
-- Verify hook event (`When`) is correct
-- Verify action type is correct
-- Save + publish agent
-
-### Python hook not changing behavior
-
-- Ensure `def main(event)` exists
-- Ensure return uses `{"modifiedPrompt": ...}`
-- Keep failure mode as `Continue` during testing
-
-### Workflow output missing
-
-- Configure `Respond to the agent` outputs
-- Match output names exactly
-- Republish workflow
-
-### Dataverse flow not firing
-
-- Check trigger table and operation scope
-- Validate connection permissions
-- Test with direct row update
-
----
-
-## Knowledge check
-
-1. When would you use only session hook and skip Python hook?  
-2. Why is Python hook better for keyword/risk scoring?  
-3. What confirms both hooks are working (besides chat output)?  
-4. What are the minimum fields needed to make a useful `hr_case` table?
-
----
-
-## Next steps
-
-1. Add weighted risk scoring in Python hook
-2. Add human approval for High severity
-3. Add monitoring dashboard for hook/workflow failures
-4. Move constants to environment variables
+The guide targets the next-generation Copilot Studio preview experience. Feature availability, connectors, licensing, and labels can differ by tenant. Use fictional data and a development environment.
