@@ -2,7 +2,7 @@
 
 [Back to the lab](LAB-BEGINNER-LINEAR.md) | [Repository index](README.md)
 
-**Optional reading:** You can finish the main lab without implementing these extra scenarios. Use this page when choosing a hook or explaining it to a customer.
+**Optional reading:** You can finish the main lab without implementing these extra scenarios. Use this page when choosing a hook or explaining it to your audience.
 
 ## Index
 
@@ -51,7 +51,7 @@ Not to repeat the same discrimination guidance. Their purposes overlap:
 1. The original Start workflow supplies general HR safety context.
 2. The original prompt Python script detects a small set of keywords and adds similar guidance.
 
-A clearer customer demonstration is **workflow to retrieve approved context** versus **Python to normalize or validate local data**. If the context never changes and no orchestration is needed, ordinary agent instructions may be simpler than a Start hook.
+A clearer demonstration is **workflow to retrieve approved context** versus **Python to normalize or validate local data**. If the context never changes and no orchestration is needed, ordinary agent instructions may be simpler than a Start hook.
 
 ## 2. Every field in Add hook
 

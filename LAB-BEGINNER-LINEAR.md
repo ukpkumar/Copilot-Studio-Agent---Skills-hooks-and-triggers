@@ -25,8 +25,7 @@ Follow the steps in order. Every exercise tells you where to click, what to ente
 11. [Automatically update records when status changes](#step-11-automatically-update-records-when-status-changes)
 12. [Create and connect a Payroll Specialist Agent](#step-12-create-and-connect-a-payroll-specialist-agent)
 13. [Run the complete demonstration](#step-13-run-the-complete-demonstration)
-14. [Troubleshooting](#step-14-troubleshooting)
-15. [Clean up and adapt for a customer](#step-15-clean-up-and-adapt-for-a-customer)
+14. [Clean up and prepare for production](#step-14-clean-up-and-prepare-for-production)
 
 ## What the components mean
 
@@ -943,25 +942,7 @@ After these pass in Preview, review the parent agent's publishing settings. Publ
 - [ ] Status-change automation updates the row without a self-triggering loop.
 - [ ] The published specialist is actually connected and invoked.
 
-## Step 14: Troubleshooting
-
-| Symptom | What to inspect | Next action |
-|---|---|---|
-| No Skills or Hooks section | Agent type, preview access, environment | Obtain the matching experience; classic skills are different |
-| Agent ignores a skill | Description, instructions, routing, execution details | Make the description specific; save and retry the exact exercise prompt |
-| Tool appears restricted | Connector policy and connection permissions | Ask the administrator; do not bypass restrictions |
-| Agent says case created but table is empty | Tool invocation and flow run | Treat as failure; check mappings and tool availability |
-| Flow absent in Add tool | Environment, callable contract, access, published status | Correct these before continuing |
-| Workflow hook returns no context | Response output name/value and linked workflow | Use `additionalContext` and the hook-generated contract |
-| Python prefix not shown in chat | Expected behavior | Inspect runtime payloads if exposed; prefixes are not automatic chat messages |
-| Python script error | Contract, syntax, string input, failure mode | Fix code; Continue is fail-open, not a protective block |
-| Existing risky tone persists | Conversation history | Do not use response tone as proof that a hook ran |
-| Dataverse column not found | Display versus logical name and actual publisher prefix | Use the actual logical name in trigger filters |
-| Status flow loops | Filtering attributes and updated fields | Filter on Case Status; never rewrite Case Status in that same processor |
-| Duplicate cases or notifications | Retries, repeated submissions, concurrency | Inspect runs before retrying; add idempotency before production |
-| Specialist unavailable | Publishing, agent type, sharing, environment | Publish a supported agent and refresh the picker |
-
-## Step 15: Clean up and adapt for a customer
+## Step 14: Clean up and prepare for production
 
 1. Turn off the lab's status-change flow and optional notifications when the demonstration ends.
 2. Remove only the fictional rows/files you created; do not bulk-delete shared tables or libraries.
@@ -969,5 +950,5 @@ After these pass in Preview, review the parent agent's publishing settings. Publ
 4. Replace test connections and hard-coded destinations with governed configuration.
 5. Add server-side validation, authenticated authorization, auditing, and idempotency before using employee data.
 6. Review fail-open versus fail-closed behavior with the security owner. A Python prefix is not a security boundary.
-7. For customer screenshots, crop/redact identities, environment identifiers, internal URLs, and private records before publishing.
-8. Revalidate connector access and preview availability in the customer's tenant; do not promise identical UI or runtime lifecycle counts.
+7. Before publishing screenshots, crop/redact identities, environment identifiers, internal URLs, and private records.
+8. Revalidate connector access and feature availability in the target production environment. Confirm that each preview feature is approved and supported for the intended deployment; do not assume identical UI or runtime lifecycle counts.

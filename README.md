@@ -6,11 +6,11 @@ Build an HR assistant with **instruction-based skills, chat triggers, workflow a
 
 **Optional deep dive: [Hooks explained: all events, fields, scenarios, and Workflow versus Python](HOOKS-REFERENCE.md).** Includes the same prompt-processing requirement implemented both ways, pre-tool decisions, failure modes, and runtime evidence.
 
-The guide provides click-by-click instructions, complete skill descriptions and procedures, copy/paste agent prompts and Python code, connector configuration, flow field mappings, test prompts, expected results, and troubleshooting.
+The guide provides click-by-click instructions, complete skill descriptions and procedures, copy/paste agent prompts and Python code, connector configuration, flow field mappings, test prompts, expected results, and production preparation.
 
 ## Choose your reading route
 
-**Linear route:** Read the [beginner guide](LAB-BEGINNER-LINEAR.md) from Step 1 through Step 15.
+**Linear route:** Read the [beginner guide](LAB-BEGINNER-LINEAR.md) from Step 1 through Step 14.
 
 **Module route:** Use the index below to open the corresponding detailed exercise. Both routes use the same complete instructions, so there is no second abbreviated "add a skill" checklist to guess from.
 
@@ -27,7 +27,7 @@ The guide provides click-by-click instructions, complete skill descriptions and 
 | 9. Case automation | Trigger inputs, validation, row mappings, response outputs, and attaching the flow as an agent tool | [Build case intake](LAB-BEGINNER-LINEAR.md#step-10-build-and-attach-the-case-intake-automation) |
 | 10. Event automation | Modified-row trigger, filtering attributes, status branches, loop prevention, optional test email | [Process status changes](LAB-BEGINNER-LINEAR.md#step-11-automatically-update-records-when-status-changes) |
 | 11. Connected agent | Full specialist instructions, publishing prerequisite, delegation description, arithmetic test | [Connect Payroll Specialist](LAB-BEGINNER-LINEAR.md#step-12-create-and-connect-a-payroll-specialist-agent) |
-| 12. Demonstration and cleanup | Twelve ordered tests, completion criteria, troubleshooting, safe cleanup | [Run the demonstration](LAB-BEGINNER-LINEAR.md#step-13-run-the-complete-demonstration), [troubleshoot](LAB-BEGINNER-LINEAR.md#step-14-troubleshooting), and [clean up](LAB-BEGINNER-LINEAR.md#step-15-clean-up-and-adapt-for-a-customer) |
+| 12. Demonstration and production preparation | Twelve ordered tests, completion criteria, safe cleanup, production preparation | [Run the demonstration](LAB-BEGINNER-LINEAR.md#step-13-run-the-complete-demonstration) and [prepare for production](LAB-BEGINNER-LINEAR.md#step-14-clean-up-and-prepare-for-production) |
 
 ## Important corrections about hooks
 
