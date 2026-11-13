@@ -19,6 +19,12 @@
 13. [Troubleshooting](#troubleshooting)
 14. [Knowledge check](#knowledge-check)
 
+## Alternate format
+
+If you prefer a strict beginner linear format with copy/paste blocks, use:
+
+- [LAB-BEGINNER-LINEAR.md](LAB-BEGINNER-LINEAR.md)
+
 ---
 
 ## Overview
